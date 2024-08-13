@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KaaS Client</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            width: 400px;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333333;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-top: 10px;
+            margin-bottom: 5px;
+            color: #555555;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        textarea {
+            padding: 8px;
+            border: 1px solid #dddddd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Deploy Application</h1>
+        <form id="deployForm">
+            <label for="appName">App Name:</label>
+            <input type="text" id="appName" name="appName">
+
+            <label for="replicas">Replicas:</label>
+            <input type="number" id="replicas" name="replicas">
+
+            <label for="imageAddress">Image Address:</label>
+            <input type="text" id="imageAddress" name="imageAddress">
+
+            <label for="imageTag">Image Tag:</label>
+            <input type="text" id="imageTag" name="imageTag">
+
+            <label for="domainAddress">Domain Address:</label>
+            <input type="text" id="domainAddress" name="domainAddress">
+
+            <label for="servicePort">Service Port:</label>
+            <input type="number" id="servicePort" name="servicePort">
+
+            <label for="resourcesCpu">Resources CPU:</label>
+            <input type="text" id="resourcesCpu" name="resourcesCpu">
+
+            <label for="resourcesRam">Resources RAM:</label>
+            <input type="text" id="resourcesRam" name="resourcesRam">
+
+            <label for="envs">Envs (JSON format):</label>
+            <textarea id="envs" name="envs"></textarea>
+
+            <button type="button" onclick="deploy()">Deploy</button>
+        </form>
+    </div>
+
+    <script>
+        function deploy() {
+            const form = document.getElementById('deployForm');
+            let envs;
+            try {
+                envs = JSON.parse(form.envs.value);
+            } catch (error) {
+                alert('Invalid JSON format for Envs.');
+                return;
+            }
+    
+            const data = {
+                AppName: form.appName.value,
+                Replicas: parseInt(form.replicas.value),
+                ImageAddress: form.imageAddress.value,
+                ImageTag: form.imageTag.value,
+                DomainAddress: form.domainAddress.value,
+                ServicePort: parseInt(form.servicePort.value),
+                Resources: {
+                    CPU: form.resourcesCpu.value,
+                    RAM: form.resourcesRam.value
+                },
+                Envs: envs
+            };
+    
+            fetch('http://127.0.0.1:5000/deploy', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Deployment initiated: ' + data.message);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>  
+</body>
+</html>

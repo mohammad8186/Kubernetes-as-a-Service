@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kubernetes Deployment Status</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            width: 600px;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333333;
+        }
+
+        h2 {
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-left: 10px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #status-result {
+            padding: 10px;
+            background-color: #f8f9fa;
+            border: 1px solid #dddddd;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-size: 14px;
+        }
+    </style>
+    <script>
+        async function getAllDeploymentsStatus() {
+            const response = await fetch('http://127.0.0.1:5002/status/all');
+            const data = await response.json();
+            document.getElementById("status-result").innerText = JSON.stringify(data, null, 2);
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Kubernetes Deployment Status</h1>
+        <div>
+            <h2>Get All Deployments Status</h2>
+            <button onclick="getAllDeploymentsStatus()">Get All Status</button>
+        </div>
+        <pre id="status-result"></pre>
+    </div>
+</body>
+</html>

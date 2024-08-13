@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PostgreSQL Deployment</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        input[type="text"], input[type="checkbox"] {
+            padding: 0.5rem;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 0.5rem 2rem;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #response {
+            margin-top: 1rem;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Deploy PostgreSQL</h1>
+        <form id="deployForm">
+            <div class="form-group">
+                <label for="appName">Application Name</label>
+                <input type="text" id="appName" name="AppName" required>
+            </div>
+            <div class="form-group">
+                <label for="cpu">CPU (e.g., 500m)</label>
+                <input type="text" id="cpu" name="cpu" required>
+            </div>
+            <div class="form-group">
+                <label for="memory">Memory (e.g., 1Gi)</label>
+                <input type="text" id="memory" name="memory" required>
+            </div>
+            <div class="form-group">
+                <label for="external">External Access</label>
+                <input type="checkbox" id="external" name="External">
+            </div>
+            <button type="submit">Deploy</button>
+        </form>
+        <div id="response"></div>
+    </div>
+    <script>
+        document.getElementById('deployForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            
+            const appName = document.getElementById('appName').value;
+            const cpu = document.getElementById('cpu').value;
+            const memory = document.getElementById('memory').value;
+            const external = document.getElementById('external').checked;
+
+            const payload = {
+                AppName: appName,
+                Resources: {
+                    cpu: cpu,
+                    memory: memory
+                },
+                External: external
+            };
+
+            try {
+                const response = await fetch('http://127.0.0.1:5003/deploy_postgres', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+                const responseDiv = document.getElementById('response');
+                if (response.ok) {
+                    responseDiv.textContent = result.message;
+                    responseDiv.style.color = 'green';
+                } else {
+                    responseDiv.textContent = result.error;
+                    responseDiv.style.color = 'red';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        });
+    </script>
+</body>
+</html>
