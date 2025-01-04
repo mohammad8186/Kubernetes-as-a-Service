@@ -1,7 +1,7 @@
 # Kubernetese-as-a-Service
 
 
-this application with distributed structure acts like a simple kubernetese services like creating deployments and services ans secrets which are main k8s components and objects.
+this application with distributed structure acts like a simple kubernetes services like creating deployments and services ans secrets which are main k8s components and objects.
 
 the app is written in pythin(flask) and has 4 APIs(services or back-ends) and 4 UIs(front-ends) which are written with css,html,javascript .
 
