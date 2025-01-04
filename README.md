@@ -1,4 +1,4 @@
-# kubernetese-as-a-Service-
+# Kubernetese-as-a-Service
 
 
 this application with distributed structure acts like a simple kubernetese services like creating deployments and services ans secrets which are main k8s components and objects.
